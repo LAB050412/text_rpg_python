@@ -167,6 +167,7 @@ def main_loop(player, state):
             continue
 
         elif cmd in ("상점", "store"):
+            reset.clear_screen()
             store(player)
             continue
         # 그 외 입력 → 장소 이동 시도
