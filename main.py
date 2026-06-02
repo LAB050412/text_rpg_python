@@ -11,13 +11,14 @@ main.py  -  통합 진입점
   - 현민우 (이 파일들)    : 세계관·스토리·지역 이동·엔딩
 
 같은 폴더에 다음 파일들이 모두 있어야 합니다:
-    팀플_정리.py    (공기민)
+    Combat.py    (공기민)
     world.py        (현민우)
     story.py        (현민우)
     movement.py     (현민우)
     main.py         (현민우 — 본 파일)
     level.py        (유채운)
     store.py        (유채운)
+    reset.py        (유채운)
 """
 
 import story
