@@ -38,21 +38,21 @@ JOB_DATA = {
 MONSTER_DATA = {
     "일반": {
         "hp": 50,
-        "attack": 15,
+        "attack": 10,
         "lv": 1,
         "exp": 25
     },
 
     "정예": {
         "hp": 100,
-        "attack": 30,
+        "attack": 20,
         "lv": 2,
         "exp": 50
     },
 
     "보스": {
         "hp": 300,
-        "attack": 45,
+        "attack": 30,
         "lv": 3,
         "exp": 100
     }
@@ -61,6 +61,7 @@ MONSTER_DATA = {
 MAP_DATA = {
     "1": {
         "name": "고블린 숲",
+        "chapter_multiplier": 1.0,
         "reward": 300,
 
         "waves": [
@@ -83,7 +84,8 @@ MAP_DATA = {
 
     "2": {
         "name": "슬라임 부족",
-        "reward": 400,
+        "chapter_multiplier" : 1.5,
+        "reward": 500,
 
         "waves": [
             [
@@ -105,7 +107,8 @@ MAP_DATA = {
 
     "3": {
         "name": "골렘 마을",
-        "reward": 500,
+        "chapter_multiplier": 2.0,
+        "reward": 1000,
 
         "waves": [
             [
@@ -147,6 +150,10 @@ class Character:
 
         return self.hp > 0
 
+    def reset_stack(self):
+        self.defense_stack = 0
+        self.focus_stack = 0
+        self.shadow_stack = 0
 
 # =========================================
 # 플레이어 클래스
@@ -238,8 +245,8 @@ class Player(Character):
 
         miss_rate = {
             "전사": 15,
-            "궁수": 10,
-            "도적": 5
+            "궁수": 5,
+            "도적": 10
         }
 
         if random.randint(1, 100) <= miss_rate[self.job]:
@@ -277,16 +284,16 @@ class Player(Character):
 
 class Monster(Character):
 
-    def __init__(self, name, grade):
+    def __init__(self, name, grade,multiplier=1.0):
 
         data = MONSTER_DATA[grade]
 
         super().__init__(
             name,
-            data["hp"],
-            data["attack"],
-            data['lv'],
-            data['exp'],
+            int(data["hp"] * multiplier),
+            int(data["attack"] * multiplier),
+            int(data['lv'] * multiplier),
+            int(data['exp'] * multiplier),
             10,
             0
         )
@@ -612,7 +619,7 @@ def battle_wave(player, monsters):
         if result == "dead":
             return "dead"
         
-        input("\n Enter 키를 눌러 진행")
+        input("\nEnter 키를 눌러 진행")
         reset.clear_screen()
     return "victory"
 
@@ -632,7 +639,7 @@ def enter_map(player, map_data):
         print(f"\n===== {i+1} 웨이브 시작 =====")
 
         monsters = [
-            Monster(name, grade)
+            Monster(name, grade, map_data["chapter_multiplier"])
             for name, grade in wave_data
         ]
 
@@ -642,21 +649,25 @@ def enter_map(player, map_data):
 
             print("\n당신은 쓰러졌습니다...")
             print("GAME OVER")
-
+            input("\nEnter 키를 눌러 종료")
             return "gameover"
 
         elif result == "escape":
 
             print("\n마을로 복귀합니다.")
+            player.reset_stack()
+            input("\nEnter 키를 눌러 진행")
             return "escape"
 
         print(f"\n{i+1} 웨이브 클리어!")
-
+        input("\nEnter 키를 눌러 진행")
+        reset.clear_screen()
     print(f"\n{map_data['name']} 클리어!")
     print(f"골드 +{map_data['reward']}")
-
     player.gold += map_data["reward"]
-
+    player.reset_stack()
+    input("\nEnter 키를 눌러 진행")
+    reset.clear_screen()
     return "clear"
 
 
