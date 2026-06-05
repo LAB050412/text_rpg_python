@@ -250,9 +250,9 @@ class Player(Character):
     def attack_target(self, target):
 
         miss_rate = {
-            "전사": 15,
+            "전사": 10,
             "궁수": 5,
-            "도적": 10
+            "도적": 15
         }
 
         if random.randint(1, 100) <= miss_rate[self.job]:
@@ -530,7 +530,7 @@ def player_turn(player, monsters):
 
                 target_num = int(
                     input("공격할 몬스터 번호 : ")
-                )
+                ) - 1
 
                 if target_num < 0 or target_num >= len(monsters):
 
