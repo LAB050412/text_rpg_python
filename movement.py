@@ -17,7 +17,7 @@ import reset
 from store import store
 # ── 공기민의 모듈에서 필요한 함수 / 데이터 import ──
 # (공기민 파일명: 팀플_정리.py)
-from Combat import enter_map, MAP_DATA, use_potion
+from combat import enter_map, MAP_DATA, use_potion
 
 
 # ============================================================
@@ -160,11 +160,15 @@ def main_loop(player, state):
 
         elif cmd in ("상태", "상태창", "status"):
             player.show_status()
+            input("\nEnter 키를 눌러 진행")
+            reset.clear_screen()
             continue
 
         elif cmd in ("포션", "potion"):
-            use_potion(player)
-            continue
+            result = use_potion(player)
+            if result == False:
+                reset.clear_screen()
+                continue
 
         elif cmd in ("상점", "store"):
             reset.clear_screen()
