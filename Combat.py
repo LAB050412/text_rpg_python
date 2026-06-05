@@ -9,7 +9,7 @@ import reset
 JOB_DATA = {
     "전사": {
         "hp": 120,
-        "attack": 30,
+        "attack": 45,
         "crit": 20,
         "evasion": 20,
         "lv": 1,
@@ -27,8 +27,8 @@ JOB_DATA = {
 
     "도적": {
         "hp": 90,
-        "attack": 45,
-        "crit": 0,
+        "attack": 30,
+        "crit": 50,
         "evasion": 50,
         "lv": 1,
         "exp": 0
@@ -192,15 +192,22 @@ class Player(Character):
 
     # 상태 출력
     def show_status(self):
+        
+        crit_rate = self.crit
+        evasion_rate = self.evasion
 
+        if self.job == "도적":
+            crit_rate += self.shadow_stack * 5
+            evasion_rate += self.shadow_stack * 5
+        
         print("\n==============================")
         print(f"직업 : {self.job}")
         print(f"HP : {self.hp}/{self.max_hp}")
         print(f"LV.{self.lv}")
         print(f"EXP : {self.exp}/{level.need_exp(self.lv)}")
         print(f"공격력 : {self.attack}")
-        print(f"치명타 : {self.crit}%")
-        print(f"회피율 : {self.evasion}%")
+        print(f"치명타 : {crit_rate}%")
+        print(f"회피율 : {evasion_rate}%")
         print(f"골드 : {self.gold}")
 
         if self.job == "전사":
@@ -217,6 +224,7 @@ class Player(Character):
     # 데미지 계산
     def calculate_damage(self):
 
+        crit_rate = self.crit
         damage = self.attack
 
         # 궁수 집중 스택
@@ -225,18 +233,16 @@ class Player(Character):
 
         critical = False
 
+        if self.job == "도적":
+
+            crit_rate += 5*(self.shadow_stack)
+
         # 크리티컬 판정
-        if random.randint(1, 100) <= self.crit:
+        if random.randint(1, 100) <= crit_rate:
 
             critical = True
 
-            if self.job == "도적":
-
-                multiplier = 1.5 + (self.shadow_stack * 0.2)
-                damage = int(damage * multiplier)
-
-            else:
-                damage = int(damage * 1.5)
+            damage = int(damage * 1.5)
 
         return damage, critical
 
@@ -349,24 +355,28 @@ class Monster(Character):
     # 몬스터 행동
     def monster_ai(self, player, monster_list):
 
+        evasion_rate = player.evasion
         self.turn_count += 1
 
         print(f"\n[{self.name}의 턴]")
 
+        if player.job == "도적":
+
+            evasion_rate += 5*player.shadow_stack
         # 플레이어 회피
-        if random.randint(1, 100) <= player.evasion:
+            if random.randint(1, 100) <= player.evasion:
 
-            print(f"{player.name}이(가) 공격을 회피했습니다!")
+                print(f"{player.name}이(가) 공격을 회피했습니다!")
 
-            # 도적 회피 스택
-            if player.job == "도적":
+                # 도적 회피 스택
+                if player.job == "도적":
 
-                if player.shadow_stack < 5:
-                    player.shadow_stack += 1
+                    if player.shadow_stack < 5:
+                        player.shadow_stack += 1
 
-                print(f"그림자 스택 증가! ({player.shadow_stack}/5)")
+                    print(f"그림자 스택 증가! ({player.shadow_stack}/5)")
 
-            return
+                return
 
         damage = self.attack
 
