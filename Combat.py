@@ -311,7 +311,7 @@ class Monster(Character):
         self.enrage = False
 
     # 광폭화
-    '''def handle_enrage(self):
+    def handle_enrage(self):
 
         if self.hp <= self.max_hp // 2 and not self.enrage:
 
@@ -319,7 +319,7 @@ class Monster(Character):
             self.attack += 20
 
             print("\n보스가 광폭화했습니다!")
-            print("공격력이 증가합니다!")'''
+            print("공격력이 증가합니다!")
 
     # 소환
     def handle_summon(self, monster_list):
@@ -332,7 +332,7 @@ class Monster(Character):
             print("부하 몬스터를 소환했습니다!")
 
     # 포션
-    '''def handle_potion(self):
+    def handle_potion(self):
 
         if self.hp <= 120 and not self.used_potion:
 
@@ -350,7 +350,7 @@ class Monster(Character):
 
             return True
 
-        return False'''
+        return False
 
     # 몬스터 행동
     def monster_ai(self, player, monster_list):
@@ -417,7 +417,7 @@ class Monster(Character):
             if player.defense_stack < 5:
                 player.defense_stack += 1
 
-            reduction = player.defense_stack * 2
+            reduction = player.defense_stack * 5
 
             damage -= reduction
 
@@ -517,8 +517,6 @@ def player_turn(player, monsters):
 
     while True:
 
-        i = 0
-
         print("\n1. 공격")
         print("2. 포션 사용")
         print("3. 도망")
@@ -532,7 +530,7 @@ def player_turn(player, monsters):
 
                 target_num = int(
                     input("공격할 몬스터 번호 : ")
-                ) - 1
+                )
 
                 if target_num < 0 or target_num >= len(monsters):
 
